@@ -58,6 +58,7 @@
 </template>
 
 <script setup>
+  definePageMeta({middleware: 'auth'})
   const route = useRoute()
   const response = await useFetch('/api/users/')
   const users = ref(response.data.value)
