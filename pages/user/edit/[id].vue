@@ -1,5 +1,6 @@
 <template>
-<form class="max-w-7xl w-full flex flex-col items-center justify-center h-screen">
+  <Navbar />
+<form class="max-w-7xl m-auto w-full flex flex-col items-center mt-12 justify-center ">
   <div class="space-y-12">            
     <div class="border-b border-gray-900/10 pb-12">
       <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>

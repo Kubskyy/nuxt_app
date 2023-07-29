@@ -1,40 +1,7 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8">
-    <div>{{ token || 'no token present, are you logged in?' }}</div>
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">Users</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email and role.</p>
-      </div>
-      <div class="mt-4 flex sm:ml-16 sm:mt-0 sm:flex-none">
-        <button type="button" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add user</button>
-        <button v-if="loggedIn" stype="button" @click="signOut()" class="block rounded-md ml-4 bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign Out</button>
-        <button v-else stype="button" @click="$router.push('/login')" class="block rounded-md ml-4 bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign In</button>
-        </div>
-    </div>
-    <div class="mt-8 flow-root">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead>
-              <tr>
-                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                  <span class="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <UserListItem v-for="user in UserList" :key="user.id" :user="user" />
-              {{ users }}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <div >
+    <Navbar />
+    <UserTable />
   </div>
   
   </template>
@@ -42,13 +9,9 @@
 <script setup>
 const headers = useRequestHeaders(['cookie'])
 const { data: token } = await useFetch('/api/token', { headers })
-
+console.log(token);
    const {status, signOut} = useAuth()
    const loggedIn = computed(()=> status.value === 'authenticated')
-
-
-  const response = await useFetch('/api/users')
-  const UserList = ref(response.data._rawValue.users)
-
+   
 </script>
   

@@ -5,4 +5,9 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@sidebase/nuxt-auth'
   ],
+  vue: {  
+    compilerOptions: {
+      isCustomElement: (tag) => tag.includes('-'),
+    },
+  }
 })
