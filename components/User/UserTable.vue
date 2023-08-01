@@ -15,8 +15,10 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                <UserListItem v-for="user in UserList" :key="user.id" :user="user" />
+                <!--<UserListItem v-for="user in UserList" :key="user.id" :user="user" />-->
             </tbody>
+            <pre>
+            </pre>
           </table>
         </div>
       </div>
@@ -24,8 +26,9 @@
 </template>
 
 <script setup>
-    const response = await useFetch('/api/users')
-  const UserList = ref(response.data._rawValue.users)
+    //const response = await useFetch('/api/users')
+    
+  //const UserList = ref(response.data._rawValue.users)
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form class="space-y-6" @submit.prevent="signIn('credentials', {callbackUrl:'/', email, password})" action="#" method="POST">
+    <form class="space-y-6" @submit.prevent="submitHandle" action="#" method="POST">
       <div>
         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
         <div class="mt-2">
@@ -39,6 +39,15 @@ const {signIn} = useAuth()
 
 const email = ref("")
 const password = ref("")
+
+const submitHandle = async() => {
+await signIn('credentials', {
+      email: email.value,
+      password: password.value,
+      callbackUrl: "/",
+      redirect: true,});
+}
+
 
 </script>
 

@@ -5,8 +5,9 @@
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{user.email}}</td>
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{user.role}}</td>
         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-            <NuxtLink :to="`/user/edit/${user.id}`" >
-                <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, {{user.name}}</span></a>
+            <NuxtLink :to="`/user/edit/${user.id}`" class="text-indigo-600 hover:text-indigo-900" >
+                Edit
+                <span class="sr-only">, {{user.name}}</span>
             </NuxtLink>
         </td>
     </tr>

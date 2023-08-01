@@ -1,6 +1,31 @@
 import { NuxtAuthHandler } from '#auth'
 import GithubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
+
+
+const getUserData = async (token: string): Promise<{
+  id: number,
+  email_address: string,
+  first_name: string,
+  last_name: string,
+}> => {
+  const user = await $fetch(`${process.env.API_URL}/users/5`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+  });
+  // @ts-ignore
+  if (!user) {
+      throw createError({
+          message: "User not found",
+          statusCode: 404,
+      });
+  }
+
+  // @ts-ignore
+  return user;
+};
+
 export default NuxtAuthHandler({
     pages: {
         signIn: '/login',
@@ -13,35 +38,63 @@ export default NuxtAuthHandler({
         }),
         CredentialsProvider.default({
             name: 'Credentials',
-            authorize(credentials: any) {
-              // You need to provide your own logic here that takes the credentials
-              // submitted and returns either a object representing a user or value
-              // that is false/null if the credentials are invalid.
-              // NOTE: THE BELOW LOGIC IS NOT SAFE OR PROPER FOR AUTHENTICATION!
-      
-              const user = {
-                email: 'test@email.com',
-                password: 'pass',
+            async authorize(credentials: any) {
+              try {
+                const payload = {
+                  email_address: credentials.email,
+                  password: credentials.password,
+                };
+                console.log(payload);
+                const res = await $fetch<{
+                    token: string;
+                } | null>(`${process.env.API_URL}/users/login`, {
+                  method: "POST",
+                  body: payload,
+                });
+                if (res?.token) {
+                  return{
+                    accessToken: res.token,
+                    status: undefined,
+                  };
+                }
+              } catch (error: any) {
+                console.log("Error in NuxtAuthHandler", error.message);
+                throw createError({
+                  message: error.message,
+                  statusCode: error.status,
+                });
               }
-      
-              if (
-                credentials?.email === user.email &&
-                credentials?.password === user.password
-              ) {
-                // Any object returned will be saved in `user` property of the JWT
-                return user
-              } else {
-                // eslint-disable-next-line no-console
-                console.error(
-                  'Warning: Malicious login attempt registered, bad credentials provided'
-                )
-      
-                // If you return null then an error will be displayed advising the user to check their details.
-                return null
-      
-                // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-              }
-            } ,
+            },
           }),
-    ]
-})
+    ],
+    session:{
+      strategy: "jwt",
+    },
+    callbacks: {
+      async jwt({token, user, account}){
+        if(user){
+          console.warn('JWT callback', { token, user, account })
+          token = {
+            ...user,
+            ...token
+          };
+        }
+        return token;
+      },
+      async session({session, token, user}){
+        try {
+          const newData = await getUserData(token.accessToken as string);
+          session.user = {
+              ...session.user,
+              ...token,
+              ...newData,
+          };
+          // return null;
+          return session;
+      } catch (err: any) {
+          console.log(err.message)
+         
+      }
+    },
+  },
+});
