@@ -3,28 +3,29 @@ import GithubProvider from 'next-auth/providers/github'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 
-// const getUserData = async (token: string): Promise<{
-//   id: number,
-//   email_address: string,
-//   first_name: string,
-//   last_name: string,
-// }> => {
-//   const user = await $fetch(`${process.env.API_URL}/users/5`, {
-//       headers: {
-//           Authorization: `Bearer ${token}`,
-//       },
-//   });
-//   // @ts-ignore
-//   if (!user) {
-//       throw createError({
-//           message: "User not found",
-//           statusCode: 404,
-//       });
-//   }
+const getUserData = async (token: string, id: number): Promise<{
+  id: number,
+  email_address: string,
+  first_name: string,
+  last_name: string,
+  phone_number: string, 
+}> => {
+  const user = await $fetch(`${process.env.API_URL}/users/${id}`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+  });
+  // @ts-ignore
+  if (!user) {
+      throw createError({
+          message: "User not found",
+          statusCode: 404,
+      });
+  }
 
-//   // @ts-ignore
-//   return user;
-// };
+  // @ts-ignore
+  return user;
+};
 
 export default NuxtAuthHandler({
     pages: {
@@ -46,13 +47,16 @@ export default NuxtAuthHandler({
                 };
                 console.log(payload);
                 const res = await $fetch<{
+                    id: number;
                     token: string;
                 } | null>(`${process.env.API_URL}/users/login`, {
                   method: "POST",
                   body: payload,
                 });
-                if (res?.token) {
+                const newData = await getUserData(res?.token as string, res?.id as number)
+                if (res?.token && newData) {
                   return{
+                    user:{...newData},
                     accessToken: res.token,
                     status: undefined,
                   };
@@ -65,58 +69,6 @@ export default NuxtAuthHandler({
                 });
               }
             },
-    
-        //     async authorize(credentials: any) {
-        //       try {
-        //         const payload = {
-        //           email_address: credentials.email,
-        //           password: credentials.password,
-        //         };
-        //         console.log(payload);
-        //         const userTokens = await $fetch<{
-        //           data: { access_token: string };
-        //         } | null>(`${process.env.API_URL}/users/login`, {
-        //           method: "POST",
-        //           body: payload,
-        //           headers: {
-        //             "Content-Type": "application/json",
-        //           },
-        //         });
-        //         // const userDetails = await $fetch<{
-        //         //   data: {
-        //         //     id: string;
-        //         //     email: string;
-        //         //     first_name: string;
-        //         //     last_name: string;
-        //         //     phone?: string;
-        //         //   };
-        //         // } | null>(`${process.env.API_URL}/users/5`, {
-        //         //   method: "GET",
-        //         //   headers: {
-        //         //     "Content-Type": "application/json",
-        //         //     Authorization: `Bearer ${userTokens?.data?.access_token}`,
-        //         //   },
-        //         // });
-        //         // if (!userTokens || !userTokens.data || !userDetails || !userDetails.data) {
-        //         //   throw createError({
-        //         //     statusCode: 500,
-        //         //     statusMessage: "Next auth failed",
-        //         //   });
-        //         // }
-        //         const user = {
-        //           // id: userDetails.data.id,
-        //           // email: userDetails.data.email,
-        //           // firstName: userDetails.data.first_name,
-        //           // lastName: userDetails.data.last_name,  
-        //           // phone: userDetails.data.phone,
-        //           accessToken: userTokens?.data.access_token,
-        //         };
-        //         return user;
-        //   } catch (error) {
-        //     console.warn("Error logging in", error);
-        //     return null;
-        //   }
-        // }, 
       }),
      ],
     session:{
@@ -140,20 +92,5 @@ export default NuxtAuthHandler({
         };
         return session;
       },
-    //   async session({session, token, user}){
-    //     try {
-    //       const newData = await getUserData(token.accessToken as string);
-    //       session.user = {
-    //           ...session.user,
-    //           ...token,
-    //           ...newData,
-    //       };
-    //       // return null;
-    //       return session;
-    //   } catch (err: any) {
-    //       console.log(err.message)
-         
-    //   }
-    // },
   },
 });

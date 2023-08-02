@@ -6,19 +6,16 @@
             <thead>
               <tr>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone number</th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
                   <span class="sr-only">Edit</span>
                 </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                <!--<UserListItem v-for="user in UserList" :key="user.id" :user="user" />-->
+                <UserListItem v-for="user in users" :key="user.id" :user="user" />
             </tbody>
-            <pre>
-            </pre>
           </table>
         </div>
       </div>
@@ -26,6 +23,17 @@
 </template>
 
 <script setup>
+defineProps({
+  users: Object
+})
+const {data} = useAuth();
+const {data: users} = await useFetch(`https://nuxt-api.dev.codelines.io/users`, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${data?.value.user?.accessToken}`,
+  },
+});
     //const response = await useFetch('/api/users')
     
   //const UserList = ref(response.data._rawValue.users)
