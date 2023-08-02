@@ -7,6 +7,7 @@
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
 
           <GithubLogin />
+          
 
           <div class="flex items-center">
             <div class="bg-gray-500 h-[.125rem] w-full"></div>
@@ -15,7 +16,9 @@
           </div>
 
           <LoginForm />
+          <NuxtLink to="/register" class="flex items-center border border-gray-500 px-4 py-2 rounded-lg text-gray-500 text-sm font-medium hover:text-black hover:bg-gray-100">Register</NuxtLink>
         </div>
+        
       </div>
     </div>
   </section>
