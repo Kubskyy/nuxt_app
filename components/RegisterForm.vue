@@ -76,11 +76,6 @@ await useFetch(`https://nuxt-api.dev.codelines.io/users/register`, {
     "password": password,
   },
 })
-// await signIn('credentials', {
-//       email: email.value,
-//       password: password.value,
-//       callbackUrl: "/",
-//       redirect: true,});
 router.push("/login");
 }
 
