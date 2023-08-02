@@ -9,6 +9,12 @@
                 <span class="sr-only">, {{user.first_name}}</span>
             </NuxtLink>
         </td>
+        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+            <button v-if="!(data.user.user.email_address == user.email_address)" @click="deleteUser(user.id)" class="text-red-400 hover:text-red-900" >
+                Delete
+                <span class="sr-only">, {{user.first_name}}</span>
+            </button>
+        </td>
     </tr>
 </template>
 
@@ -16,5 +22,18 @@
 defineProps({
   user: Object,
 })
+
+
+const {data} = useAuth();
+const deleteUser = async(id) => {
+await useFetch(`https://nuxt-api.dev.codelines.io/users/${id}`, {
+  method: "DELETE",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${data.value.user.accessToken}`,
+  },
+})
+document.location.reload();
+}
 
 </script>
