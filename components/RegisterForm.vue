@@ -51,6 +51,8 @@
 </template>
 
 <script setup>
+import { useToast } from "vue-toastification";
+const toast = useToast();
 const router = useRouter();
 const email = ref("")
 const password = ref("")
@@ -59,24 +61,22 @@ const last_name = ref("")
 const phone_number = ref()
 
 const submitHandle = async() => {
-await useFetch(`https://nuxt-api.dev.codelines.io/users/register`, {
-  method: "POST",
-  mode: "cors",
-  headers: {
-    "Access-Control-Allow-Methods" : "POST",
-    "Access-Control-Allow-Origin": "http://localhost:3000",
-    "Access-Control-Allow-Credentials": "true",
-    "Content-Type": "application/json",
-  },
-  body:{
-    "first_name": first_name,
-    "last_name": last_name,
-    "email_address": email,
-    "phone_number": phone_number,
-    "password": password,
-  },
-})
+  try{
+  await useFetchApi().post("/users/register", {
+    "first_name": first_name.value,
+    "last_name": last_name.value,
+    "email_address": email.value,
+    "phone_number": phone_number.value,
+    "password": password.value
+  },{
+    options:{},
+  }
+  )
 router.push("/login");
+  }catch(e){
+    console.log("error", e.data);
+    toast.error(e.data.message);
+  }
 }
 
 

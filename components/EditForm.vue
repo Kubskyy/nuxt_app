@@ -8,28 +8,28 @@
         <div class="sm:col-span-3">
           <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
           <div class="mt-2">
-            <input type="text" v-model="first_name" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input type="text" v-model="user.first_name" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
           </div>
         </div>
 
         <div class="sm:col-span-3">
           <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
           <div class="mt-2">
-            <input type="text" v-model="last_name" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input type="text" v-model="user.last_name" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
           </div>
         </div>
 
         <div class="sm:col-span-4">
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
           <div class="mt-2">
-            <input readonly id="email" v-model="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input readonly id="email" v-model="user.email_address" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
           </div>
         </div>
 
         <div class="sm:col-span-2 sm:col-start-1">
           <label for="title" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
           <div class="mt-2">
-            <input  type="text" v-model="phone_number" name="title" id="title" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input  type="text" v-model="user.phone_number" name="title" id="title" autocomplete="address-level2" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
           </div>
         </div>
         
@@ -47,41 +47,47 @@
 </template>
 
 <script setup>
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
-const {data} = useAuth();
 console.log(route.params.id);
-const {data: user} = await useFetch(`https://nuxt-api.dev.codelines.io/users/${route.params.id}`, {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${data?.value.user?.accessToken}`,
-  },
-});
+const {data} = await useFetchApi().get(`/users/${route.params.id}`);
+const user = ref(data?.value);
 
- const first_name = ref(user.value.first_name)
- const last_name = ref(user.value.last_name)
- const phone_number = ref(user.value.phone_number)
- const email = ref(user.value.email_address)
+// const submitHandle = async() => {
+//   try{
+//     let res = await useFetchApi().put(`/users/${route.params.id}`,{
+//     body:{
+//     "first_name": user?.first_name,
+//     "last_name": user?.last_name,
+//     "phone_number": user?.phone_number,
+//   },
+//   options:{},
+// })
+// console.log(res)
+// //router.push("/");
+// }catch(err){
+//   console.log(err);
+//   toast.error(err.data);
+// }
+// }
 
 const submitHandle = async() => {
-await useFetch(`https://nuxt-api.dev.codelines.io/users/${route.params.id}`, {
-  method: "PUT",
-  headers: {
-    "Access-Control-Allow-Methods" : "PUT",
-    "Access-Control-Allow-Origin": "http://localhost:3000",
-    "Access-Control-Allow-Credentials": "true",
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${data?.value.user?.accessToken}`,
-  },
-  body:{
-    "first_name": first_name,
-    "last_name": last_name,
-    "phone_number": phone_number,
+  try{
+  await useFetchApi().put(`/users/${route.params.id}`, {
+    "first_name": user.value.first_name,
+    "last_name": user.value.last_name,
+    "phone_number": user.value.phone_number,
+  },{
+    options:{},
   }
-})
-router.push("/");
+  )
+router.push("/login");
+toast.success("Edited successfully")
+  }catch(e){
+    toast.error(e.response._data[0].message);
+  }
 }
 
 </script>

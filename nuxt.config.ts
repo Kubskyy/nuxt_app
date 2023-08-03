@@ -1,5 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig:{
+    public:{
+      apiUrl: 'https://nuxt-api.dev.codelines.io',
+    }
+  },
   devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
@@ -9,5 +14,8 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => tag.includes('-'),
     },
+  },
+  build:{
+    transpile: ['vue-toastification'],
   }
 })

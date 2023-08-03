@@ -1,3 +1,4 @@
+
 <template>
   <div >
     <Navbar />
@@ -9,7 +10,7 @@
 
 <script setup>
 definePageMeta({middleware: 'auth'})
-const {data} = useAuth();
+
 
 
    

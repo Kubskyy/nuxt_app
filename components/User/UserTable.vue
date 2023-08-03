@@ -14,7 +14,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                <UserListItem v-for="user in users" :key="user.id" :user="user" />
+                  <UserListItem  v-for="user in users" :key="user.id" :user="user" /> 
             </tbody>
           </table>
         </div>
@@ -23,20 +23,9 @@
 </template>
 
 <script setup>
-defineProps({
-  users: Object
-})
-const {data} = useAuth();
-const {data: users} = await useFetch(`https://nuxt-api.dev.codelines.io/users`, {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${data?.value.user?.accessToken}`,
-  },
+const {pending, data: users} = await useFetchApi().get("/users", {
+  lazy:true
 });
-    //const response = await useFetch('/api/users')
-    
-  //const UserList = ref(response.data._rawValue.users)
 </script>
 
 <style lang="scss" scoped>

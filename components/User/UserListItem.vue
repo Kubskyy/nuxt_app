@@ -23,17 +23,14 @@ defineProps({
   user: Object,
 })
 
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 const {data} = useAuth();
 const deleteUser = async(id) => {
-await useFetch(`https://nuxt-api.dev.codelines.io/users/${id}`, {
-  method: "DELETE",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${data.value.user.accessToken}`,
-  },
-})
+  await useFetchApi().destroy(`/users/${id}`)
 document.location.reload();
+toast.success("Successfully deleted user")
+
 }
 
 </script>
