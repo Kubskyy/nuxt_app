@@ -73,6 +73,7 @@ const submitHandle = async() => {
   }
   )
 router.push("/login");
+toast.info("Verify your email")
   }catch(e){
     console.log("error", e.data);
     toast.error(e.data.message);

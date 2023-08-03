@@ -23,9 +23,10 @@
 </template>
 
 <script setup>
-const {pending, data: users} = await useFetchApi().get("/users", {
+const {data: users} = await useFetchApi().get("/users", {
   lazy:true
 });
+console.log(users);
 </script>
 
 <style lang="scss" scoped>
