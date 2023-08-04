@@ -55,23 +55,6 @@ console.log(route.params.id);
 const {data} = await useFetchApi().get(`/users/${route.params.id}`);
 const user = ref(data?.value);
 
-// const submitHandle = async() => {
-//   try{
-//     let res = await useFetchApi().put(`/users/${route.params.id}`,{
-//     body:{
-//     "first_name": user?.first_name,
-//     "last_name": user?.last_name,
-//     "phone_number": user?.phone_number,
-//   },
-//   options:{},
-// })
-// console.log(res)
-// //router.push("/");
-// }catch(err){
-//   console.log(err);
-//   toast.error(err.data);
-// }
-// }
 
 const submitHandle = async() => {
   try{
@@ -83,8 +66,8 @@ const submitHandle = async() => {
     options:{},
   }
   )
-router.push("/login");
 toast.success("Edited successfully")
+router.push("/login");
   }catch(e){
     toast.error(e.response._data[0].message);
   }

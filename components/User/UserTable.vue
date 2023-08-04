@@ -23,10 +23,9 @@
 </template>
 
 <script setup>
-const {data: users} = await useFetchApi().get("/users", {
-  lazy:true
-});
-console.log(users);
+defineProps({
+  users: Object,
+})
 </script>
 
 <style lang="scss" scoped>

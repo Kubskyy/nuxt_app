@@ -1,5 +1,5 @@
 <template>
-    <tr>
+    <tr id="item">
         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{{user.first_name}} {{user.last_name}}</td>
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{user.email_address}}</td>
         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{user.phone_number}}</td>
@@ -27,9 +27,13 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const {data} = useAuth();
 const deleteUser = async(id) => {
-  await useFetchApi().destroy(`/users/${id}`)
-document.location.reload();
-toast.success("Successfully deleted user")
+  await useFetchApi().destroy(`/users/${id}`, {
+    server:false,
+  })
+  const element = document.getElementById('item');
+  element.remove();
+toast.success("Successfully deleted user");
+
 
 }
 

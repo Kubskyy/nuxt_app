@@ -85,12 +85,27 @@ export default NuxtAuthHandler({
         }
         return token;   
       },
-      async session({ session, token }) {
+      async session({ session, token, user }) {
         session.user = {
           ...session.user,
+          ...user,
           ...token,
         };
         return session;
+      //   try {
+      //     const newData = await getUserData(token.accessToken as string, 24 as number);
+      //     console.log("newData", newData);
+      //     session.user = {
+      //         ...session.user,
+      //         ...token,
+      //         ...newData,
+      //     };
+      //     // return null;
+      //     return session;
+      // } catch (err: any) {
+      //     console.log(err.message)
+      //     return null;
+      // }
       },
   },
 });
